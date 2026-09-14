@@ -7,11 +7,12 @@ import (
 	"io"
 	"math"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
+
+	"golang.org/x/term"
 )
 
 type Material struct { ID string `json:"id"`; Name string `json:"name"`; Tier string `json:"tier"`; Kind string `json:"kind"`; SignalRS int `json:"signal_rs"`; Quality *float64 `json:"quality,omitempty"`; Notes string `json:"notes,omitempty"` }
@@ -22,6 +23,8 @@ type PlanItem struct { BlueprintID string `json:"blueprint_id"`; Crafts float64 
 type Data struct { Version int `json:"version"`; Patch string `json:"patch"`; Materials []Material `json:"materials"`; Inventory []Inventory `json:"inventory"`; Blueprints []Blueprint `json:"blueprints"`; Plan []PlanItem `json:"plan"` }
 type App struct { data Data; dataDir string; screen, selected int; filter, message, scan string; quitting bool; scanRows []ScanResult }
 type ScanResult struct { Material Material; Count int; Error float64 }
+
+var terminalState *term.State
 
 func main(){ dir,err:=defaultDataDir(); if err!=nil{fatal(err)}; app,err:=load(dir);if err!=nil{fatal(err)};if err:=rawMode();err!=nil{fatal(err)};defer restoreMode();app.loop() }
 func defaultDataDir()(string,error){if p:=os.Getenv("SCWIKI_DATA");p!=""{return p,os.MkdirAll(p,0755)};h,e:=os.UserHomeDir();if e!=nil{return "",e};d:=filepath.Join(h,".local","share","scwiki");return d,os.MkdirAll(d,0755)}
@@ -61,8 +64,8 @@ func(a *App)blueprintByID(id string)*Blueprint{for i:=range a.data.Blueprints{if
 func(a *App)scanMatch(v int)[]ScanResult{var r []ScanResult;for _,m:=range a.data.Materials{if m.SignalRS<=0{continue};c:=float64(v)/float64(m.SignalRS);n:=int(math.Round(c));if n<1||n>50{continue};err:=math.Abs(float64(v)-float64(n*m.SignalRS))/float64(v)*100;if err<=10{r=append(r,ScanResult{m,n,err})}};sort.Slice(r,func(i,j int)bool{return r[i].Error<r[j].Error});if len(r)>12{r=r[:12]};return r}
 func linePrompt(prompt string)(string,error){restoreMode();defer rawMode();fmt.Print("\r\n"+prompt);return strings.TrimSpace(mustReadLine()) ,nil}
 func mustReadLine()string{b:=bufio.NewReader(os.Stdin);s,_:=b.ReadString('\n');return s}
-func rawMode()error{return exec.Command("stty","-icanon","-echo","min","1","time","0").Run()}
-func restoreMode(){_ = exec.Command("stty","sane").Run()}
+func rawMode()error{state,err:=term.MakeRaw(int(os.Stdin.Fd()));if err!=nil{return err};terminalState=state;return nil}
+func restoreMode(){if terminalState!=nil{_ = term.Restore(int(os.Stdin.Fd()),terminalState);terminalState=nil}}
 func readKey(r io.Reader)(byte,error){b:=make([]byte,1);_,e:=r.Read(b);return b[0],e}
 func clearScreen(){fmt.Print("\x1b[2J\x1b[H")};func termSize()(int,int){return 100,30};func window(sel,n,rows int)(int,int){if rows<5{rows=5};if n<=rows{return 0,n};s:=sel-rows/2;if s<0{s=0};if s+rows>n{s=n-rows};return s,s+rows};func selmark(i,s int)string{if i==s{return ">"};return " "};func min(a,b int)int{if a<b{return a};return b};func fatal(e error){fmt.Fprintln(os.Stderr,e);os.Exit(1)}
 func seedMaterials()[]Material{rows:=[]struct{id,name,tier,kind string;rs int}{{"quantainium","Quantainium","S","Ship Mineable Ore",3170},{"stileron","Stileron","A","Ship Mineable Ore",3185},{"savrilium","Savrilium","A","Ship Mineable Ore",3200},{"ouratite","Ouratite","A","Ship Mineable Ore",3370},{"riccite","Riccite","B","Ship Mineable Ore",3385},{"lindinium","Lindinium","B","Ship Mineable Ore",3400},{"beryl","Beryl","A","Ship Mineable Ore",3540},{"taranite","Taranite","A","Ship Mineable Ore",3555},{"borase","Borase","B","Ship Mineable Ore",3570},{"gold","Gold","A","Ship Mineable Ore",3585},{"bexalite","Bexalite","S","Ship Mineable Ore",3600},{"laranite","Laranite","A","Ship Mineable Ore",3825},{"aslarite","Aslarite","B","Ship Mineable Ore",3840},{"titanium","Titanium","B","Ship Mineable Ore",3855},{"tungsten","Tungsten","B","Ship Mineable Ore",3870},{"agricium","Agricium","A","Ship Mineable Ore",3885},{"torite","Torite","B","Ship Mineable Ore",3900},{"hephaestanite","Hephaestanite","B","Ship Mineable Ore",4180},{"tin","Tin","C","Ship Mineable Ore",4195},{"quartz","Quartz","C","Ship Mineable Ore",4210},{"corundum","Corundum","C","Ship Mineable Ore",4225},{"copper","Copper","C","Ship Mineable Ore",4240},{"silicon","Silicon","C","Ship Mineable Ore",4255},{"iron","Iron","C","Ship Mineable Ore",4270},{"aluminium","Aluminium","C","Ship Mineable Ore",4285},{"ice","Ice","C","Ship Mineable Ore",4300}};out:=make([]Material,0,len(rows));for _,x:=range rows{out=append(out,Material{ID:x.id,Name:x.name,Tier:x.tier,Kind:x.kind,SignalRS:x.rs})};return out}
