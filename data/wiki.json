@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "patch": "4.10",
+  "materials": [
+    {"id":"quantainium","name":"Quantainium","tier":"S","kind":"Ship Mineable Ore","signal_rs":3170},
+    {"id":"stileron","name":"Stileron","tier":"A","kind":"Ship Mineable Ore","signal_rs":3185},
+    {"id":"savrilium","name":"Savrilium","tier":"A","kind":"Ship Mineable Ore","signal_rs":3200},
+    {"id":"ouratite","name":"Ouratite","tier":"A","kind":"Ship Mineable Ore","signal_rs":3370},
+    {"id":"riccite","name":"Riccite","tier":"B","kind":"Ship Mineable Ore","signal_rs":3385},
+    {"id":"lindinium","name":"Lindinium","tier":"B","kind":"Ship Mineable Ore","signal_rs":3400},
+    {"id":"beryl","name":"Beryl","tier":"A","kind":"Ship Mineable Ore","signal_rs":3540},
+    {"id":"taranite","name":"Taranite","tier":"A","kind":"Ship Mineable Ore","signal_rs":3555},
+    {"id":"borase","name":"Borase","tier":"B","kind":"Ship Mineable Ore","signal_rs":3570},
+    {"id":"gold","name":"Gold","tier":"A","kind":"Ship Mineable Ore","signal_rs":3585},
+    {"id":"bexalite","name":"Bexalite","tier":"S","kind":"Ship Mineable Ore","signal_rs":3600},
+    {"id":"laranite","name":"Laranite","tier":"A","kind":"Ship Mineable Ore","signal_rs":3825},
+    {"id":"aslarite","name":"Aslarite","tier":"B","kind":"Ship Mineable Ore","signal_rs":3840},
+    {"id":"titanium","name":"Titanium","tier":"B","kind":"Ship Mineable Ore","signal_rs":3855},
+    {"id":"tungsten","name":"Tungsten","tier":"B","kind":"Ship Mineable Ore","signal_rs":3870},
+    {"id":"agricium","name":"Agricium","tier":"A","kind":"Ship Mineable Ore","signal_rs":3885},
+    {"id":"torite","name":"Torite","tier":"B","kind":"Ship Mineable Ore","signal_rs":3900},
+    {"id":"hephaestanite","name":"Hephaestanite","tier":"B","kind":"Ship Mineable Ore","signal_rs":4180},
+    {"id":"tin","name":"Tin","tier":"C","kind":"Ship Mineable Ore","signal_rs":4195},
+    {"id":"quartz","name":"Quartz","tier":"C","kind":"Ship Mineable Ore","signal_rs":4210},
+    {"id":"corundum","name":"Corundum","tier":"C","kind":"Ship Mineable Ore","signal_rs":4225},
+    {"id":"copper","name":"Copper","tier":"C","kind":"Ship Mineable Ore","signal_rs":4240},
+    {"id":"silicon","name":"Silicon","tier":"C","kind":"Ship Mineable Ore","signal_rs":4255},
+    {"id":"iron","name":"Iron","tier":"C","kind":"Ship Mineable Ore","signal_rs":4270},
+    {"id":"aluminium","name":"Aluminium","tier":"C","kind":"Ship Mineable Ore","signal_rs":4285},
+    {"id":"ice","name":"Ice","tier":"C","kind":"Ship Mineable Ore","signal_rs":4300}
+  ],
+  "inventory": [],
+  "blueprints": [
+    {"id":"bp_craft_radr_chco_s02_observer","name":"Observer Grade 1","output":"Observer","quantity":1,"tracked":false,"materials":[{"material_id":"iron","quantity":1.2},{"material_id":"quartz","quantity":0.3}],"notes":"4.10 example; add quality thresholds as desired."},
+    {"id":"bp_craft_radr_grnp_s01_ecouter","name":"Ecouter Grade 1","output":"Ecouter","quantity":1,"tracked":false,"materials":[{"material_id":"titanium","quantity":0.28},{"material_id":"laranite","quantity":0.1},{"material_id":"gold","quantity":0.1}],"notes":"4.10 example."}
+  ],
+  "plan": []
+}
